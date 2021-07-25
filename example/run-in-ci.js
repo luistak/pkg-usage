@@ -1,4 +1,4 @@
-const { getPackagesUsage } = require('../dist');
+const { getPackagesUsages } = require('../dist');
 
 /**
  * You could use the result in many use cases example:
@@ -6,4 +6,4 @@ const { getPackagesUsage } = require('../dist');
  * - To fill an S3 with every usage of the desired builds
  * - To block the CI if the package is not being used
  */
-const result = getPackagesUsage();
+const result = getPackagesUsages();
