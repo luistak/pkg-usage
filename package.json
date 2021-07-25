@@ -1,5 +1,5 @@
 {
-  "name": "npm-package-usage",
+  "name": "npm-pkg-usage",
   "version": "0.1.0",
   "description": "Npm package usage metrics",
   "main": "dist/index.js",
