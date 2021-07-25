@@ -23,6 +23,8 @@
     "@types/node": "^16.4.2",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "3.3.0",
     "eslint": "^7.31.0",
     "jest": "^27.0.6",
     "js-yaml": "^4.1.0",
@@ -32,6 +34,7 @@
     "typescript": "^4.3.5"
   },
   "scripts": {
+    "commit": "cz",
     "preexample": "yarn build",
     "example": "cd ./example && node run-in-ci.js",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
@@ -68,5 +71,10 @@
       "main",
       "next"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
