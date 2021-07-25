@@ -62,5 +62,11 @@
   },
   "dependencies": {
     "ts-morph": "^11.0.3"
+  },
+  "release": {
+    "branches": [
+      "main",
+      "next"
+    ]
   }
 }
