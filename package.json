@@ -1,0 +1,64 @@
+{
+  "name": "npm-package-usage",
+  "version": "0.1.0",
+  "description": "Npm package usage metrics",
+  "main": "dist/index.js",
+  "files": [
+    "src",
+    "dist",
+    "example"
+  ],
+  "repository": "https://github.com/luistak/npm-package-usage.git",
+  "bugs": {
+    "url": "https://github.com/luistak/npm-package-usage/issues"
+  },
+  "homepage": "https://github.com/luistak/npm-package-usage",
+  "author": "Luis Takahashi <takahashihideki408@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@tsconfig/node14": "^1.0.1",
+    "@types/jest": "^26.0.24",
+    "@types/js-yaml": "^4.0.2",
+    "@types/node": "^16.4.2",
+    "@typescript-eslint/eslint-plugin": "^4.28.4",
+    "@typescript-eslint/parser": "^4.28.4",
+    "eslint": "^7.31.0",
+    "jest": "^27.0.6",
+    "js-yaml": "^4.1.0",
+    "prettier": ">=2",
+    "ts-jest": "^27.0.4",
+    "ts-morph": "^11.0.3",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "preexample": "yarn build",
+    "example": "cd ./example && node run-in-ci.js",
+    "lint": "eslint . --cache --fix --ext .ts,.tsx",
+    "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
+    "test:jest": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test": "yarn test:jest",
+    "prebuild": "rm -Rf dist",
+    "build": "tsc"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/lib/"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(ts?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
+  }
+}
