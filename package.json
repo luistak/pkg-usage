@@ -39,6 +39,7 @@
     "example": "cd ./example && node run-in-ci.js",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
+    "test:ci": "yarn test --passWithNoTests",
     "test:jest": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

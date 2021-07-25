@@ -1,19 +1,20 @@
-name: Semantic Release
+name: Release
+
 on:
   push:
-    branches:
-      - main
+    tags:
+      - v*
+
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v1
         with:
           node-version: lts/*
-      - run: yarn
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+          registry-url: https://registry.npmjs.org/
+      - run: yarn && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
