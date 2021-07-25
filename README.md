@@ -1,6 +1,6 @@
-# WIP: 🏗️ npm-package-usage 🚧
+# WIP: 🏗️ npm-pkg-usage 🚧
 
-[![npm](https://img.shields.io/npm/v/npm-package-usage.svg)](https://www.npmjs.com/package/npm-package-usage)
+[![npm](https://img.shields.io/npm/v/npm-pkg-usage.svg)](https://www.npmjs.com/package/npm-pkg-usage)
 
 > ⚠️ This library is under development so feel free to check it out but it's not ready for production.
 
