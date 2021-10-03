@@ -1,10 +1,7 @@
-export type Package = {
-  name: string;
-};
-export type Config = {
-  dryRun?: boolean;
+export type Options = {
   fileGlobs: string;
-  packages: Package[];
+  packages: string[];
+  packageJsonCWD?: string;
 };
 
 export type FileUsage = {

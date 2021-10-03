@@ -1,10 +1,11 @@
 import { Project, SourceFile } from 'ts-morph';
-import { CONFIG_FILE_NAME } from './constants';
-import { FileUsage, Package, PackageUsage } from './types';
-import { readYamlConfig } from './utils';
+import pkgup from 'pkg-up';
+
+import { FileUsage, PackageUsage, Options } from './types';
+import { readFileSync } from 'fs';
 
 function getPackageUsage(
-  pkg: Package,
+  pkg: string,
   sourceFile: SourceFile
 ): FileUsage | undefined {
   const importDeclaration = sourceFile.getImportDeclaration(
@@ -13,7 +14,7 @@ function getPackageUsage(
         .getModuleSpecifier()
         .getLiteralValue();
 
-      return moduleSpecifier == pkg.name;
+      return moduleSpecifier == pkg;
     }
   );
 
@@ -31,15 +32,47 @@ function getPackageUsage(
   };
 }
 
-export function getPackagesUsages(): PackageUsage[] | undefined {
+function getPackageJson(packageJsonCWD?: string) {
+  const pkgJsonPath = pkgup.sync({ cwd: packageJsonCWD });
+
+  const { dependencies, peerDependencies, devDependencies } = JSON.parse(
+    readFileSync(pkgJsonPath!, 'utf8')
+  );
+
+  return {
+    dependencies: new Map(
+      dependencies ? Object.entries(dependencies) : undefined
+    ),
+    peerDependencies: new Map(
+      peerDependencies ? Object.entries(peerDependencies) : undefined
+    ),
+    devDependencies: new Map(
+      devDependencies ? Object.entries(devDependencies) : undefined
+    ),
+  };
+}
+
+function getPackageVersion(pkg: string, packageJsonCWD?: string) {
+  const { dependencies, peerDependencies, devDependencies } =
+    getPackageJson(packageJsonCWD);
+
+  return (
+    dependencies.get(pkg) ||
+    devDependencies.get(pkg) ||
+    peerDependencies.get(pkg)
+  );
+}
+
+export function getPackagesUsages({
+  packages,
+  fileGlobs,
+  packageJsonCWD,
+}: Options): PackageUsage[] | undefined {
   const project = new Project();
-  const { dryRun, packages, fileGlobs } = readYamlConfig();
   const sourceFiles = project.addSourceFilesAtPaths(fileGlobs);
 
   if (!sourceFiles.length) {
-    throw new Error(
-      `No files were found in this glob: ${fileGlobs}, please check your ${CONFIG_FILE_NAME} file`
-    );
+    throw new Error(`No files were found in this glob: ${fileGlobs}`);
   }
 
   const result = packages.map((pkg) => {
@@ -48,16 +81,12 @@ export function getPackagesUsages(): PackageUsage[] | undefined {
       .filter(Boolean);
 
     return {
-      name: pkg.name,
+      name: pkg,
+      version: getPackageVersion(pkg, packageJsonCWD),
       count: fileUsages.length,
       files: fileUsages,
     };
   });
-
-  if (dryRun) {
-    console.log(result);
-    return;
-  }
 
   return result;
 }

@@ -1,5 +1,5 @@
 {
-  "name": "npm-pkg-usage",
+  "name": "pkg-usage",
   "version": "0.1.0",
   "description": "Npm package usage metrics",
   "main": "dist/index.js",
@@ -8,16 +8,20 @@
     "dist",
     "example"
   ],
-  "repository": "https://github.com/luistak/npm-package-usage.git",
-  "bugs": {
-    "url": "https://github.com/luistak/npm-package-usage/issues"
+  "bin": {
+    "pkg-usage": "./scripts/pkg-usage.js"
   },
-  "homepage": "https://github.com/luistak/npm-package-usage",
+  "repository": "https://github.com/luistak/pkg-usage.git",
+  "bugs": {
+    "url": "https://github.com/luistak/pkg-usage/issues"
+  },
+  "homepage": "https://github.com/luistak/pkg-usage",
   "author": "Luis Takahashi <takahashihideki408@gmail.com>",
   "license": "MIT",
   "private": false,
   "devDependencies": {
     "@tsconfig/node14": "^1.0.1",
+    "@types/faker": "^5.5.8",
     "@types/jest": "^26.0.24",
     "@types/js-yaml": "^4.0.2",
     "@types/node": "^16.4.2",
@@ -26,8 +30,8 @@
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "^7.31.0",
+    "faker": "^5.5.3",
     "jest": "^27.0.6",
-    "js-yaml": "^4.1.0",
     "prettier": ">=2",
     "ts-jest": "^27.0.4",
     "ts-node": "^10.1.0",
@@ -36,10 +40,10 @@
   "scripts": {
     "commit": "cz",
     "preexample": "yarn build",
-    "example": "cd ./example && node run-in-ci.js",
+    "example": "cd ./example && node ../scripts/pkg-usage.js",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
-    "test:ci": "yarn test --passWithNoTests",
+    "test:ci": "CI=true yarn test:coverage",
     "test:jest": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -50,21 +54,20 @@
   "jest": {
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "<rootDir>/lib/"
+      "/__tests__/utils.ts"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/__tests__/utils.ts"
     ],
     "transform": {
-      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(ts?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json"
+    "modulePathIgnorePatterns": [
+      "__mocks__"
     ]
   },
   "dependencies": {
+    "pkg-up": "^3.1.0",
     "ts-morph": "^11.0.3"
   },
   "release": {

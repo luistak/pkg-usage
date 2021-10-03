@@ -5,6 +5,10 @@
     "declaration": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*", "node_modules/@tsconfig/node14/tsconfig.json"],
+  "include": [
+    "src/**/*",
+    "__tests__/*",
+    "node_modules/@tsconfig/node14/tsconfig.json"
+  ],
   "exclude": ["node_modules", "example", "**/*.spec.ts"]
 }
