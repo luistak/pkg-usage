@@ -5,11 +5,11 @@
 ## Installation
 
 ```sh
-npm install windowed-observable
+npm install pkg-usage
 
 # or
 
-yarn add windowed-observable
+yarn add pkg-usage
 ```
 
 ## Introduction
