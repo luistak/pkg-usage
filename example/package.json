@@ -1,0 +1,16 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Luis Takahashi",
+  "license": "MIT",
+  "dependencies": {
+    "bla": "^0.0.1"
+  },
+  "peerDependencies": {
+    "@scoped/package": "^4.3.5"
+  },
+  "devDependencies": {
+    "@scoped/package1": "^1.0.0"
+  }
+}

@@ -1,16 +1,57 @@
-# WIP: 🏗️ npm-pkg-usage 🚧
+# 📦 pkg-usage
 
-[![npm](https://img.shields.io/npm/v/npm-pkg-usage.svg)](https://www.npmjs.com/package/npm-pkg-usage)
+[![npm](https://img.shields.io/npm/v/pkg-usage.svg)](https://www.npmjs.com/package/pkg-usage)
 
-> ⚠️ This library is under development so feel free to check it out but it's not ready for production.
+## Installation
+
+```sh
+npm install windowed-observable
+
+# or
+
+yarn add windowed-observable
+```
 
 ## Introduction
 
 Have you ever wondered how your library is being used in other repositories? It's your lucky day because this package aims to solve it.
 
-Given a `npm-pkg-usage.yml` file you could configure and gets details about how your library is being imported
+Given a few options you can gets details about how your library is being imported along with its version
 
-### Current features:
+## Usage
 
+```js
+import { getPackagesUsages } from 'pkg-usage';
+
+const usages = getPackagesUsages({
+  packages: ['react'],
+  fileGlobs: `**/**.ts`,
+});
+
+console.log(usages);
+```
+
+Output
+
+```json
+[
+  {
+    count: 1,
+    files: [
+      {
+        defaultImport: undefined,
+        name: `${fileName}.ts`,
+        namedImports: imports,
+      },
+    ],
+    name: pkg,
+    version,
+  }
+]
+```
+
+## Current features:
+
+- The package version
 - How many files are importing your `package`
 - What are the default and named imports by file

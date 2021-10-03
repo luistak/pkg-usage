@@ -1,5 +1,0 @@
-dryRun: true
-fileGlobs: '**/*.ts'
-packages:
-  - name: 'bla'
-  - name: '@scoped/package'
