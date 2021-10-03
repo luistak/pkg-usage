@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { getPackagesUsages } = require('../dist/index');
+const { getPackagesUsages } = require('pkg-usage');
 
 function getOptionsFromArgs(options) {
   const argsMap = {
