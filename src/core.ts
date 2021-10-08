@@ -40,13 +40,13 @@ function getPackageJson(packageJsonCWD?: string) {
   );
 
   return {
-    dependencies: new Map(
+    dependencies: new Map<string, string>(
       dependencies ? Object.entries(dependencies) : undefined
     ),
-    peerDependencies: new Map(
+    peerDependencies: new Map<string, string>(
       peerDependencies ? Object.entries(peerDependencies) : undefined
     ),
-    devDependencies: new Map(
+    devDependencies: new Map<string, string>(
       devDependencies ? Object.entries(devDependencies) : undefined
     ),
   };
