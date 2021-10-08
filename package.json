@@ -1,6 +1,6 @@
 {
   "name": "pkg-usage",
-  "version": "0.2.0",
+  "version": "0.2.1-pre",
   "description": "Npm package usage metrics",
   "main": "dist/src/index.js",
   "files": [
