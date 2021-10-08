@@ -14,5 +14,5 @@ export type PackageUsage = {
   name: string;
   count: number;
   files?: (FileUsage | undefined)[];
-  version: string | undefined;
+  version?: string;
 };
