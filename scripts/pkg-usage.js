@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // const { getPackagesUsages } = require('pkg-usage');
-const { Command } = require('commander');
 const { getPackagesUsages } = require('../dist/src');
+const { Command } = require('commander');
 
 const program = new Command();
 
@@ -20,10 +20,15 @@ program
     '-f, --file-globs <value>',
     'Files to analyze based on file globs ex: -f "**/*.(ts|tsx)" or --file-globs="**/*.(js|jsx)"'
   )
-  .action(({ packages, fileGlobs }) => {
+  .option(
+    '-cwd, --package-json-CWD <value>',
+    'Directory to start from ex: -cwd "/path/to/start/from"'
+  )
+  .action(({ packages, fileGlobs, packageJsonCWD }) => {
     const usages = getPackagesUsages({
       packages,
       fileGlobs,
+      packageJsonCWD,
     });
 
     console.log(JSON.stringify(usages, undefined, 2));
