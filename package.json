@@ -1,6 +1,6 @@
 {
   "name": "pkg-usage",
-  "version": "0.2.1-pre",
+  "version": "0.2.1",
   "description": "Npm package usage metrics",
   "main": "dist/src/index.js",
   "files": [
@@ -8,6 +8,13 @@
     "dist",
     "example",
     "scripts"
+  ],
+  "keywords": [
+    "node",
+    "npm",
+    "package",
+    "usage",
+    "resources"
   ],
   "bin": {
     "pkg-usage": "./scripts/pkg-usage.js"
@@ -45,15 +52,18 @@
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
     "test:ci": "CI=true yarn test:coverage",
-    "test:jest": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:jest": "NODE_OPTIONS=--max_old_space_size=4096 jest -w=2",
+    "test:watch": "yarn test --watch",
+    "test:coverage": "yarn test --coverage",
     "test": "yarn test:jest",
     "prebuild": "rm -Rf dist",
-    "build": "tsc"
+    "build": "tsc",
+    "prerelease": "cz bump",
+    "release": "npm publish"
   },
   "jest": {
     "testPathIgnorePatterns": [
+      "/dist/",
       "/node_modules/",
       "/__tests__/utils.ts"
     ],
@@ -68,6 +78,7 @@
     ]
   },
   "dependencies": {
+    "commander": "^8.2.0",
     "pkg-up": "^3.1.0",
     "ts-morph": "^11.0.3"
   },

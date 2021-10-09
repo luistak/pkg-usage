@@ -60,6 +60,7 @@ describe('getPackagesUsages()', () => {
           files: [
             {
               defaultImport: undefined,
+              filePath: `${MOCKS_DIR_CWD}/${fileName}.ts`,
               name: `${fileName}.ts`,
               namedImports: imports,
             },

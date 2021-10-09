@@ -6,6 +6,7 @@ export type Options = {
 
 export type FileUsage = {
   name: string;
+  filePath: string;
   defaultImport: string | undefined;
   namedImports: string[];
 };
@@ -13,6 +14,6 @@ export type FileUsage = {
 export type PackageUsage = {
   name: string;
   count: number;
-  files?: (FileUsage | undefined)[];
+  files?: FileUsage[];
   version?: string;
 };

@@ -1,8 +1,7 @@
 import { Project, SourceFile } from 'ts-morph';
-import pkgup from 'pkg-up';
 
+import { getPackageVersion, nonNullish } from './helpers';
 import { FileUsage, PackageUsage, Options } from './types';
-import { readFileSync } from 'fs';
 
 function getPackageUsage(
   pkg: string,
@@ -27,40 +26,10 @@ function getPackageUsage(
 
   return {
     name: sourceFile.getBaseName(),
+    filePath: sourceFile.getFilePath(),
     defaultImport: defaultImport?.getText(),
     namedImports: namedImports.map((a) => a.getName()),
   };
-}
-
-function getPackageJson(packageJsonCWD?: string) {
-  const pkgJsonPath = pkgup.sync({ cwd: packageJsonCWD });
-
-  const { dependencies, peerDependencies, devDependencies } = JSON.parse(
-    readFileSync(pkgJsonPath!, 'utf8')
-  );
-
-  return {
-    dependencies: new Map<string, string>(
-      dependencies ? Object.entries(dependencies) : undefined
-    ),
-    peerDependencies: new Map<string, string>(
-      peerDependencies ? Object.entries(peerDependencies) : undefined
-    ),
-    devDependencies: new Map<string, string>(
-      devDependencies ? Object.entries(devDependencies) : undefined
-    ),
-  };
-}
-
-function getPackageVersion(pkg: string, packageJsonCWD?: string) {
-  const { dependencies, peerDependencies, devDependencies } =
-    getPackageJson(packageJsonCWD);
-
-  return (
-    dependencies.get(pkg) ||
-    devDependencies.get(pkg) ||
-    peerDependencies.get(pkg)
-  );
 }
 
 export function getPackagesUsages({
@@ -78,7 +47,7 @@ export function getPackagesUsages({
   const result = packages.map((pkg) => {
     const fileUsages = sourceFiles
       .map((sourceFile) => getPackageUsage(pkg, sourceFile))
-      .filter(Boolean);
+      .filter(nonNullish);
 
     return {
       name: pkg,
