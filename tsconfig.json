@@ -3,10 +3,12 @@
   "compilerOptions": {
     "preserveConstEnums": true,
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "allowJs": true
   },
   "include": [
     "src/**/*",
+    "scripts/*",
     "__tests__/*",
     "node_modules/@tsconfig/node14/tsconfig.json"
   ],

@@ -45,15 +45,16 @@
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
     "test:ci": "CI=true yarn test:coverage",
-    "test:jest": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:jest": "NODE_OPTIONS=--max_old_space_size=4096 jest -w=2",
+    "test:watch": "yarn test --watch",
+    "test:coverage": "yarn test --coverage",
     "test": "yarn test:jest",
     "prebuild": "rm -Rf dist",
     "build": "tsc"
   },
   "jest": {
     "testPathIgnorePatterns": [
+      "/dist/",
       "/node_modules/",
       "/__tests__/utils.ts"
     ],
