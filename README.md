@@ -62,7 +62,7 @@ export type PackageUsage = {
 [`npx`](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b) is a package runner tool
 
 ```bash
-npx pkg-usage -p "react,redux" --f "**/*.(ts|tsx)"
+npx pkg-usage -p "react,redux" -f "**/*.(ts|tsx)"
 ```
 
 Or
