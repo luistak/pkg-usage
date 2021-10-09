@@ -1,35 +1,32 @@
 #!/usr/bin/env node
 
-const { getPackagesUsages } = require('pkg-usage');
+// const { getPackagesUsages } = require('pkg-usage');
+const { Command } = require('commander');
+const { getPackagesUsages } = require('../dist/src');
 
-function getOptionsFromArgs(options) {
-  const argsMap = {
-    '--packages': 'packages',
-    '--file-globs': 'fileGlobs',
-  };
+const program = new Command();
 
-  return options.reduce((acc, option) => {
-    const [key, value] = option.split('=');
-
-    if (value) {
-      return { ...acc, [argsMap[key]]: value };
-    }
-
-    return acc;
-  }, {});
+function commaSeparatedList(value) {
+  return value.split(',');
 }
 
-async function run() {
-  const args = process.argv.slice(2);
+program
+  .requiredOption(
+    '-p, --packages <items>',
+    'Packages to analyze ex: -p vue,vuex or --packages="react,redux"',
+    commaSeparatedList
+  )
+  .requiredOption(
+    '-f, --file-globs <value>',
+    'Files to analyze based on file globs ex: -f "**/*.(ts|tsx)" or --file-globs="**/*.(js|jsx)"'
+  )
+  .action(({ packages, fileGlobs }) => {
+    const usages = getPackagesUsages({
+      packages,
+      fileGlobs,
+    });
 
-  const { packages, fileGlobs } = getOptionsFromArgs(args);
-
-  const usages = getPackagesUsages({
-    packages: packages.split(','),
-    fileGlobs,
+    console.log(JSON.stringify(usages, undefined, 2));
   });
 
-  console.log(JSON.stringify(usages, undefined, 2));
-}
-
-run();
+program.parse(process.argv);
