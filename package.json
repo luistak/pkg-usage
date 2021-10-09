@@ -57,7 +57,9 @@
     "test:coverage": "yarn test --coverage",
     "test": "yarn test:jest",
     "prebuild": "rm -Rf dist",
-    "build": "tsc"
+    "build": "tsc",
+    "prerelease": "cz bump",
+    "release": "npm publish"
   },
   "jest": {
     "testPathIgnorePatterns": [
