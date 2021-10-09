@@ -43,7 +43,8 @@
     "prettier": ">=2",
     "ts-jest": "^27.0.4",
     "ts-node": "^10.1.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "semantic-release": "^18.0.0"
   },
   "scripts": {
     "commit": "cz",
@@ -59,7 +60,8 @@
     "prebuild": "rm -Rf dist",
     "build": "tsc",
     "prerelease": "cz bump",
-    "release": "npm publish"
+    "release": "npm publish",
+    "semantic-release": "semantic-release"
   },
   "jest": {
     "testPathIgnorePatterns": [

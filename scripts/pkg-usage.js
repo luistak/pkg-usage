@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// const { getPackagesUsages } = require('pkg-usage');
-const { getPackagesUsages } = require('../dist/src');
+const { getPackagesUsages } = require('pkg-usage');
+// const { getPackagesUsages } = require('../dist/src');
 const { Command } = require('commander');
 
 const program = new Command();
