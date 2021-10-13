@@ -68,7 +68,7 @@ npx pkg-usage -p "react,redux" -f "**/*.(ts|tsx)"
 Or
 
 ```bash
-npx pkg-usage --packages="vue,vuex" --file-globs="**/*.(js|jsx)"
+npx pkg-usage --packages="vue,vuex" --file-globs="**/*.(js|vue)"
 ```
 
 If you use npm 5.1 or earlier, you can't use npx. Instead, install it globally:
