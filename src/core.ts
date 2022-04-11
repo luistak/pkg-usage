@@ -1,7 +1,102 @@
-import { Project, SourceFile } from 'ts-morph';
+import {
+  ImportDeclaration,
+  Project,
+  ReferencedSymbol,
+  SourceFile,
+  SyntaxKind,
+} from 'ts-morph';
 
-import { getPackageVersion, nonNullish } from './helpers';
-import { FileUsage, PackageUsage, Options } from './types';
+import {
+  getJSXElementProps,
+  getPackageVersion,
+  getProperty,
+  isCallExpression,
+  isJSXElement,
+  isPropertyAccessExpression,
+  isValue,
+  line,
+  nonNullish,
+  print,
+} from './helpers';
+
+import {
+  PackageUsage,
+  Options,
+  JSXElementUsage,
+  Import,
+  CallExpressionUsage,
+  PropertyAccessExpressionUsage,
+  FileUsage,
+} from './types';
+
+const getDetailsFromImports = (importDeclaration: ImportDeclaration) => {
+  const defaultReferences = importDeclaration
+    .getDefaultImport()
+    ?.findReferences();
+
+  const namedReferences = importDeclaration
+    .getNamedImports()
+    .map((named) =>
+      named.getLastChildByKindOrThrow(SyntaxKind.Identifier).findReferences()
+    );
+
+  const propsList = [
+    ...getDetailsFromReferences(defaultReferences),
+    ...namedReferences.map(getDetailsFromReferences).flat(),
+  ];
+
+  return propsList;
+};
+
+const getDetailsFromReferences = (
+  references: ReferencedSymbol[] = []
+): Import[] =>
+  references.map((referencedSymbol) => ({
+    name: referencedSymbol.getDefinition().getNode().getText(),
+    usages: referencedSymbol
+      .getReferences()
+      .flatMap(
+        (
+          reference
+        ):
+          | JSXElementUsage
+          | CallExpressionUsage
+          | PropertyAccessExpressionUsage
+          | never[] => {
+          if (isValue(reference)) {
+            return {
+              line: line(reference),
+              text: print(reference),
+            };
+          }
+
+          if (isCallExpression(reference)) {
+            return {
+              line: line(reference),
+              text: print(reference),
+            };
+          }
+
+          if (isPropertyAccessExpression(reference)) {
+            return {
+              line: line(reference),
+              property: getProperty(reference),
+              text: print(reference),
+            };
+          }
+
+          if (isJSXElement(reference)) {
+            return {
+              line: line(reference),
+              props: getJSXElementProps(reference),
+              text: print(reference),
+            };
+          }
+
+          return [];
+        }
+      ),
+  }));
 
 function getPackageUsage(
   pkg: string,
@@ -21,14 +116,12 @@ function getPackageUsage(
     return undefined;
   }
 
-  const namedImports = importDeclaration.getNamedImports();
-  const defaultImport = importDeclaration.getDefaultImport();
+  const imports = getDetailsFromImports(importDeclaration);
 
   return {
     name: sourceFile.getBaseName(),
     filePath: sourceFile.getFilePath(),
-    defaultImport: defaultImport?.getText(),
-    namedImports: namedImports.map((a) => a.getName()),
+    imports,
   };
 }
 

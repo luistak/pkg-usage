@@ -1,6 +1,7 @@
 import pkgup from 'pkg-up';
 
 import { readFileSync } from 'fs';
+import { ReferenceEntry, SyntaxKind } from 'ts-morph';
 
 // istanbul ignore next
 function getPackageJson(packageJsonCWD?: string) {
@@ -38,3 +39,47 @@ export function getPackageVersion(pkg: string, packageJsonCWD?: string) {
 export function nonNullish<Value>(v: Value): v is NonNullable<Value> {
   return v !== undefined && v !== null;
 }
+
+export const getJSXElementProps = (reference: ReferenceEntry) =>
+  reference
+    .getNode()
+    .getParentOrThrow()
+    .getFirstChildByKindOrThrow(SyntaxKind.JsxAttributes)
+    .getChildrenOfKind(SyntaxKind.JsxAttribute)
+    .map((attribute) =>
+      attribute.getFirstChildByKindOrThrow(SyntaxKind.Identifier).getText()
+    );
+
+export const getProperty = (reference: ReferenceEntry) =>
+  reference
+    .getNode()
+    .getParentOrThrow()
+    .getLastChildByKindOrThrow(SyntaxKind.Identifier)
+    .getText();
+
+export const isJSXElement = (reference: ReferenceEntry) =>
+  reference.getNode().getParentOrThrow().getKind() ===
+    SyntaxKind.JsxOpeningElement ||
+  reference.getNode().getParentOrThrow().getKind() ===
+    SyntaxKind.JsxSelfClosingElement;
+
+export const isValue = (reference: ReferenceEntry) =>
+  reference.getNode().getParentOrThrow().getKind() ===
+    SyntaxKind.VariableDeclaration ||
+  reference.getNode().getParentOrThrow().getKind() ===
+    SyntaxKind.ExpressionStatement ||
+  reference.getNode().getParentOrThrow().getKind() === SyntaxKind.SyntaxList;
+
+export const isCallExpression = (reference: ReferenceEntry) =>
+  reference.getNode().getParentOrThrow().getKind() ===
+  SyntaxKind.CallExpression;
+
+export const isPropertyAccessExpression = (reference: ReferenceEntry) =>
+  reference.getNode().getParentOrThrow().getKind() ===
+  SyntaxKind.PropertyAccessExpression;
+
+export const print = (reference: ReferenceEntry) =>
+  reference.getNode().getParentOrThrow().getFullText();
+
+export const line = (reference: ReferenceEntry) =>
+  reference.getNode().getStartLineNumber();

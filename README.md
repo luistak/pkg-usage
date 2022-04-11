@@ -26,6 +26,8 @@ import { getPackagesUsages } from 'pkg-usage';
 const usages: PackageUsage[] = getPackagesUsages({
   packages: ['react'],
   fileGlobs: `**/**.ts`,
+  packageJsonCWD: './package.json',
+
 });
 
 console.log(usages);
@@ -34,11 +36,42 @@ console.log(usages);
 Package Usage types
 
 ```ts
+
+export type JSXElementUsage = {
+  line: number;
+  props: string[];
+  text: string;
+};
+
+export type CallExpressionUsage = {
+  line: number;
+  text: string;
+};
+
+export type ValueUsage = {
+  line: number;
+  text: string;
+};
+
+export type PropertyAccessExpressionUsage = {
+  line: number;
+  property: string;
+  text: string;
+};
+
+export type Usages =
+  | JSXElementUsage[]
+  | (CallExpressionUsage | PropertyAccessExpressionUsage | ValueUsage)[];
+
+export type Import = {
+  name: string;
+  usages: Usages;
+};
+
 export type FileUsage = {
   name: string;
   filePath: string;
-  defaultImport: string | undefined;
-  namedImports: string[];
+  imports: Import[];
 };
 
 export type PackageUsage = {
