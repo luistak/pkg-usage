@@ -37,7 +37,7 @@ describe('getPackagesUsages()', () => {
       expect(
         getPackagesUsages({
           packages: [pkg],
-          fileGlobs: `${MOCKS_DIR}/**.ts`,
+          fileGlobs: `${MOCKS_DIR}/**.tsx`,
           packageJsonCWD: MOCKS_DIR_CWD,
         })
       ).toStrictEqual([{ count: 0, files: [], name: pkg, version }]);
@@ -48,21 +48,20 @@ describe('getPackagesUsages()', () => {
     it('should return the right package usage', () => {
       const { fileName, imports, pkg, version } = mockPackageUsageFile();
 
-      expect(
-        getPackagesUsages({
-          packages: [pkg],
-          fileGlobs: `${MOCKS_DIR}/**.ts`,
-          packageJsonCWD: MOCKS_DIR_CWD,
-        })
-      ).toStrictEqual([
+      const result = getPackagesUsages({
+        packages: [pkg],
+        fileGlobs: `${MOCKS_DIR}/**.tsx`,
+        packageJsonCWD: MOCKS_DIR_CWD,
+      });
+
+      expect(result).toStrictEqual([
         {
           count: 1,
           files: [
             {
-              defaultImport: undefined,
-              filePath: `${MOCKS_DIR_CWD}/${fileName}.ts`,
-              name: `${fileName}.ts`,
-              namedImports: imports,
+              filePath: `${MOCKS_DIR_CWD}/${fileName}.tsx`,
+              name: `${fileName}.tsx`,
+              imports,
             },
           ],
           name: pkg,
