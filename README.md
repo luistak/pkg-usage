@@ -27,6 +27,7 @@ const usages: PackageUsage[] = getPackagesUsages({
   packages: ['react'],
   fileGlobs: `**/**.ts`,
   packageJsonCWD: './package.json',
+  analyzeImportUsages: false,
 });
 
 console.log(usages);
@@ -83,11 +84,12 @@ export type PackageUsage = {
 
 ## CLI usage
 
-| Options                  | Description                          | Example                                        |
-| ------------------------ | ------------------------------------ | ---------------------------------------------- |
-| -p, --packages           | Packages to analyze                  | -p vue,vuex or --packages="react,redux"        |
-| -f, --file-globs         | Files to analyze based on file globs | -f "_.(ts\|tsx)" or --file-globs="_.(js\|jsx)" |
-| -cwd, --package-json-CWD | Directory to start from              | -cwd "/path/to/start/from"                     |
+| Options                     | Description                           | Example                                        |
+| --------------------------- | ------------------------------------- | ---------------------------------------------- |
+| -p, --packages              | Packages to analyze                   | -p vue,vuex or --packages="react,redux"        |
+| -f, --file-globs            | Files to analyze based on file globs  | -f "_.(ts\|tsx)" or --file-globs="_.(js\|jsx)" |
+| -u, --analyze-import-usages | (Experimental) Analyzes import usages | -u                                             |
+| -cwd, --package-json-CWD    | Directory to start from               | -cwd "/path/to/start/from"                     |
 
 ### npx
 
