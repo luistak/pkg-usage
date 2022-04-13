@@ -11,12 +11,18 @@ export type FileUsage = {
   imports: Import[];
 };
 
+export enum ExportType {
+  named = 'named',
+  default = 'default',
+}
+
 export type Usages =
   | JSXElementUsage[]
   | (CallExpressionUsage | PropertyAccessExpressionUsage | ValueUsage)[];
 
 export type Import = {
   name: string;
+  type: ExportType;
   usages?: Usages;
 };
 

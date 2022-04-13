@@ -27,7 +27,6 @@ const usages: PackageUsage[] = getPackagesUsages({
   packages: ['react'],
   fileGlobs: `**/**.ts`,
   packageJsonCWD: './package.json',
-
 });
 
 console.log(usages);
@@ -36,7 +35,6 @@ console.log(usages);
 Package Usage types
 
 ```ts
-
 export type JSXElementUsage = {
   line: number;
   props: string[];
@@ -65,7 +63,8 @@ export type Usages =
 
 export type Import = {
   name: string;
-  usages: Usages;
+  type: ExportType;
+  usages?: Usages;
 };
 
 export type FileUsage = {

@@ -10,6 +10,7 @@ const result = getPackagesUsages({
   packages: ['bla', '@scoped/package'],
   fileGlobs: './*{.ts,.tsx}',
   packageJsonCWD: './package.json',
+  analyzeImportUsages: true,
 });
 
 console.log(JSON.stringify(result, null, 2));

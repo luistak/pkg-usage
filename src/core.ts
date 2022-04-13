@@ -7,6 +7,7 @@ import {
 } from 'ts-morph';
 
 import {
+  getExportType,
   getJSXElementProps,
   getPackageVersion,
   getProperty,
@@ -27,6 +28,7 @@ import {
   CallExpressionUsage,
   PropertyAccessExpressionUsage,
   FileUsage,
+  ExportType,
 } from './types';
 
 const getImports = (importDeclaration: ImportDeclaration): Import[] => {
@@ -36,8 +38,10 @@ const getImports = (importDeclaration: ImportDeclaration): Import[] => {
     .map((named) => named.getName());
 
   return namedImports
-    .concat(defaultImport ? [defaultImport] : [])
-    .map((name) => ({ name }));
+    .map((name) => ({ name, type: ExportType.named }))
+    .concat(
+      defaultImport ? [{ name: defaultImport, type: ExportType.default }] : []
+    );
 };
 
 const getDetailsFromImports = (importDeclaration: ImportDeclaration) => {
@@ -64,6 +68,7 @@ const getDetailsFromReferences = (
 ): Import[] =>
   references.map((referencedSymbol) => ({
     name: referencedSymbol.getDefinition().getNode().getText(),
+    type: getExportType(referencedSymbol),
     usages: referencedSymbol
       .getReferences()
       .flatMap(

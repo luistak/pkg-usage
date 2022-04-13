@@ -1,7 +1,8 @@
 import pkgup from 'pkg-up';
 
 import { readFileSync } from 'fs';
-import { ReferenceEntry, SyntaxKind } from 'ts-morph';
+import { ReferencedSymbol, ReferenceEntry, SyntaxKind } from 'ts-morph';
+import { ExportType } from './types';
 
 // istanbul ignore next
 function getPackageJson(packageJsonCWD?: string) {
@@ -39,6 +40,11 @@ export function getPackageVersion(pkg: string, packageJsonCWD?: string) {
 export function nonNullish<Value>(v: Value): v is NonNullable<Value> {
   return v !== undefined && v !== null;
 }
+
+export const getExportType = (referencedSymbol: ReferencedSymbol) =>
+  referencedSymbol.getDefinition().getDeclarationNode()?.getParentSyntaxList()
+    ? ExportType.named
+    : ExportType.default;
 
 export const getJSXElementProps = (reference: ReferenceEntry) =>
   reference

@@ -2,7 +2,7 @@ import { join, dirname } from 'path';
 import { cwd } from 'process';
 import { writeFileSync, existsSync, mkdirSync, rmdirSync } from 'fs';
 import f from 'faker';
-import { Import } from '../src';
+import { ExportType, Import } from '../src';
 
 export const MOCKS_DIR = '__mocks__';
 export const MOCKS_DIR_CWD = join(join(cwd(), MOCKS_DIR));
@@ -48,6 +48,7 @@ function jsxElement(value: string, line: number): [Import, string] {
   return [
     {
       name: value,
+      type: ExportType.named,
       usages: [
         {
           line: line + 2,
@@ -67,6 +68,7 @@ function propertyAccess(value: string, line: number): [Import, string] {
   return [
     {
       name: value,
+      type: ExportType.named,
       usages: [{ line: line + 2, property, text: `\n${value}.${property}` }],
     },
     `${value}.${property}`,
@@ -75,14 +77,22 @@ function propertyAccess(value: string, line: number): [Import, string] {
 
 function callExpression(value: string, line: number): [Import, string] {
   return [
-    { name: value, usages: [{ line: line + 2, text: `\n${value}()` }] },
+    {
+      name: value,
+      type: ExportType.named,
+      usages: [{ line: line + 2, text: `\n${value}()` }],
+    },
     `${value}()`,
   ];
 }
 
 function valueUsage(value: string, line: number): [Import, string] {
   return [
-    { name: value, usages: [{ line: line + 2, text: `\n${value};` }] },
+    {
+      name: value,
+      type: ExportType.named,
+      usages: [{ line: line + 2, text: `\n${value};` }],
+    },
     `${value};`,
   ];
 }
