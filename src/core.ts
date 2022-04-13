@@ -29,6 +29,17 @@ import {
   FileUsage,
 } from './types';
 
+const getImports = (importDeclaration: ImportDeclaration): Import[] => {
+  const defaultImport = importDeclaration.getDefaultImport()?.getText();
+  const namedImports = importDeclaration
+    .getNamedImports()
+    .map((named) => named.getName());
+
+  return namedImports
+    .concat(defaultImport ? [defaultImport] : [])
+    .map((name) => ({ name }));
+};
+
 const getDetailsFromImports = (importDeclaration: ImportDeclaration) => {
   const defaultReferences = importDeclaration
     .getDefaultImport()
@@ -100,7 +111,8 @@ const getDetailsFromReferences = (
 
 function getPackageUsage(
   pkg: string,
-  sourceFile: SourceFile
+  sourceFile: SourceFile,
+  analyzeImportUsages: boolean
 ): FileUsage | undefined {
   const importDeclaration = sourceFile.getImportDeclaration(
     (importDeclaration) => {
@@ -116,8 +128,16 @@ function getPackageUsage(
     return undefined;
   }
 
-  const imports = getDetailsFromImports(importDeclaration);
+  if (analyzeImportUsages) {
+    const imports = getDetailsFromImports(importDeclaration);
+    return {
+      name: sourceFile.getBaseName(),
+      filePath: sourceFile.getFilePath(),
+      imports,
+    };
+  }
 
+  const imports = getImports(importDeclaration);
   return {
     name: sourceFile.getBaseName(),
     filePath: sourceFile.getFilePath(),
@@ -128,6 +148,7 @@ function getPackageUsage(
 export function getPackagesUsages({
   packages,
   fileGlobs,
+  analyzeImportUsages,
   packageJsonCWD,
 }: Options): PackageUsage[] | undefined {
   const project = new Project();
@@ -139,7 +160,9 @@ export function getPackagesUsages({
 
   const result = packages.map((pkg) => {
     const fileUsages = sourceFiles
-      .map((sourceFile) => getPackageUsage(pkg, sourceFile))
+      .map((sourceFile) =>
+        getPackageUsage(pkg, sourceFile, analyzeImportUsages)
+      )
       .filter(nonNullish);
 
     return {

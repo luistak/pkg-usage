@@ -1,6 +1,7 @@
 export type Options = {
   fileGlobs: string;
   packages: string[];
+  analyzeImportUsages: boolean;
   packageJsonCWD?: string;
 };
 
@@ -16,7 +17,7 @@ export type Usages =
 
 export type Import = {
   name: string;
-  usages: Usages;
+  usages?: Usages;
 };
 
 export type PackageUsage = {

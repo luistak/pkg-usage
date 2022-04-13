@@ -2,6 +2,7 @@ import { join, dirname } from 'path';
 import { cwd } from 'process';
 import { writeFileSync, existsSync, mkdirSync, rmdirSync } from 'fs';
 import f from 'faker';
+import { Import } from '../src';
 
 export const MOCKS_DIR = '__mocks__';
 export const MOCKS_DIR_CWD = join(join(cwd(), MOCKS_DIR));
@@ -42,7 +43,7 @@ function generatePropList(props: string[]) {
   return props.map((prop) => `${prop}="${prop}"`).join(' ');
 }
 
-function jsxElement(value: string, line: number) {
+function jsxElement(value: string, line: number): [Import, string] {
   const props = mockUniqueList(() => word().toLowerCase());
   return [
     {
@@ -61,7 +62,7 @@ function jsxElement(value: string, line: number) {
   ];
 }
 
-function propertyAccess(value: string, line: number) {
+function propertyAccess(value: string, line: number): [Import, string] {
   const property = word();
   return [
     {
@@ -72,14 +73,14 @@ function propertyAccess(value: string, line: number) {
   ];
 }
 
-function callExpression(value: string, line: number) {
+function callExpression(value: string, line: number): [Import, string] {
   return [
     { name: value, usages: [{ line: line + 2, text: `\n${value}()` }] },
     `${value}()`,
   ];
 }
 
-function valueUsage(value: string, line: number) {
+function valueUsage(value: string, line: number): [Import, string] {
   return [
     { name: value, usages: [{ line: line + 2, text: `\n${value};` }] },
     `${value};`,
@@ -103,7 +104,15 @@ function mockTSFile(pkgName: string, imports: string[]) {
   };
 }
 
-export function mockPackageUsageFile(customData?: string) {
+type mockPackageUsageFileAttributes = {
+  customData?: string;
+  analyzeImportUsages?: boolean;
+};
+
+export function mockPackageUsageFile({
+  customData,
+  analyzeImportUsages = false,
+}: mockPackageUsageFileAttributes) {
   const importNames = mockUniqueList(() => capitalize(word()));
   const fileName = f.datatype.uuid();
   const pkg = f.hacker.noun();
@@ -128,8 +137,18 @@ export function mockPackageUsageFile(customData?: string) {
     })
   );
 
+  if (customData) {
+    return {
+      fileName,
+      pkg,
+      version,
+    };
+  }
+
   return {
-    imports: !customData ? imports : undefined,
+    imports: analyzeImportUsages
+      ? imports
+      : imports.map(({ name }) => ({ name })),
     fileName,
     pkg,
     version,
