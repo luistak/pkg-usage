@@ -1,6 +1,6 @@
 {
   "name": "pkg-usage",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Npm package usage metrics",
   "main": "dist/src/index.js",
   "files": [
@@ -82,7 +82,7 @@
   "dependencies": {
     "commander": "^8.2.0",
     "pkg-up": "^3.1.0",
-    "ts-morph": "^11.0.3"
+    "ts-morph": "^14.0.0"
   },
   "release": {
     "branches": [
