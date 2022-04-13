@@ -158,7 +158,7 @@ export function mockPackageUsageFile({
   return {
     imports: analyzeImportUsages
       ? imports
-      : imports.map(({ name }) => ({ name })),
+      : imports.map(({ name, type }) => ({ name, type })),
     fileName,
     pkg,
     version,

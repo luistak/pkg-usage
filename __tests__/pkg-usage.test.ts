@@ -23,7 +23,6 @@ describe('getPackagesUsages()', () => {
         getPackagesUsages({
           packages: [pkg],
           fileGlobs: `WRONG_FILE_GLOB/**.xyz`,
-          analyzeImportUsages: false,
         })
       ).toThrow();
     });
@@ -39,7 +38,6 @@ describe('getPackagesUsages()', () => {
         getPackagesUsages({
           packages: [pkg],
           fileGlobs: `${MOCKS_DIR}/**.tsx`,
-          analyzeImportUsages: false,
           packageJsonCWD: MOCKS_DIR_CWD,
         })
       ).toStrictEqual([{ count: 0, files: [], name: pkg, version }]);
@@ -47,6 +45,33 @@ describe('getPackagesUsages()', () => {
   });
 
   describe('given any package name and imports', () => {
+    it('should return the right package usage', () => {
+      const { fileName, imports, pkg, version } = mockPackageUsageFile({});
+
+      expect(
+        getPackagesUsages({
+          packages: [pkg],
+          fileGlobs: `${MOCKS_DIR}/**.tsx`,
+          packageJsonCWD: MOCKS_DIR_CWD,
+        })
+      ).toStrictEqual([
+        {
+          count: 1,
+          files: [
+            {
+              filePath: `${MOCKS_DIR_CWD}/${fileName}.tsx`,
+              name: `${fileName}.tsx`,
+              imports,
+            },
+          ],
+          name: pkg,
+          version,
+        },
+      ]);
+    });
+  });
+
+  describe('given any package name and imports, and analyzeImportUsages as true', () => {
     it('should return the right package usage', () => {
       const { fileName, imports, pkg, version } = mockPackageUsageFile({
         analyzeImportUsages: true,

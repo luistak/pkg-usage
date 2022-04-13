@@ -153,8 +153,8 @@ function getPackageUsage(
 export function getPackagesUsages({
   packages,
   fileGlobs,
-  analyzeImportUsages,
   packageJsonCWD,
+  analyzeImportUsages = false,
 }: Options): PackageUsage[] | undefined {
   const project = new Project();
   const sourceFiles = project.addSourceFilesAtPaths(fileGlobs);
