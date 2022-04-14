@@ -1,3 +1,5 @@
-import { apiX, apiB, apiC } from 'bla';
+import { apiA, apiB, apiC } from 'bla';
 
-const a = bla;
+const a = apiA;
+
+console.log(apiB);

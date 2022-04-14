@@ -26,6 +26,8 @@ import { getPackagesUsages } from 'pkg-usage';
 const usages: PackageUsage[] = getPackagesUsages({
   packages: ['react'],
   fileGlobs: `**/**.ts`,
+  packageJsonCWD: './package.json',
+  analyzeImportUsages: false,
 });
 
 console.log(usages);
@@ -34,11 +36,42 @@ console.log(usages);
 Package Usage types
 
 ```ts
+export type JSXElementUsage = {
+  line: number;
+  props: string[];
+  text: string;
+};
+
+export type CallExpressionUsage = {
+  line: number;
+  text: string;
+};
+
+export type ValueUsage = {
+  line: number;
+  text: string;
+};
+
+export type PropertyAccessExpressionUsage = {
+  line: number;
+  property: string;
+  text: string;
+};
+
+export type Usages =
+  | JSXElementUsage[]
+  | (CallExpressionUsage | PropertyAccessExpressionUsage | ValueUsage)[];
+
+export type Import = {
+  name: string;
+  type: ExportType;
+  usages?: Usages;
+};
+
 export type FileUsage = {
   name: string;
   filePath: string;
-  defaultImport: string | undefined;
-  namedImports: string[];
+  imports: Import[];
 };
 
 export type PackageUsage = {
@@ -51,11 +84,12 @@ export type PackageUsage = {
 
 ## CLI usage
 
-| Options                  | Description                          | Example                                        |
-| ------------------------ | ------------------------------------ | ---------------------------------------------- |
-| -p, --packages           | Packages to analyze                  | -p vue,vuex or --packages="react,redux"        |
-| -f, --file-globs         | Files to analyze based on file globs | -f "_.(ts\|tsx)" or --file-globs="_.(js\|jsx)" |
-| -cwd, --package-json-CWD | Directory to start from              | -cwd "/path/to/start/from"                     |
+| Options                     | Description                           | Example                                        |
+| --------------------------- | ------------------------------------- | ---------------------------------------------- |
+| -p, --packages              | Packages to analyze                   | -p vue,vuex or --packages="react,redux"        |
+| -f, --file-globs            | Files to analyze based on file globs  | -f "_.(ts\|tsx)" or --file-globs="_.(js\|jsx)" |
+| -u, --analyze-import-usages | (Experimental) Analyzes import usages | -u                                             |
+| -cwd, --package-json-CWD    | Directory to start from               | -cwd "/path/to/start/from"                     |
 
 ### npx
 

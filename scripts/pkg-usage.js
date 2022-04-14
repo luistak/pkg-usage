@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { getPackagesUsages } = require('pkg-usage');
-// const { getPackagesUsages } = require('../dist/src');
+
 const { Command } = require('commander');
 
 const program = new Command();
@@ -24,10 +24,15 @@ program
     '-cwd, --package-json-CWD <value>',
     'Directory to start from ex: -cwd "/path/to/start/from"'
   )
-  .action(({ packages, fileGlobs, packageJsonCWD }) => {
+  .option(
+    '-u, --analyze-import-usages',
+    'Experimental feature that analyzes usages of imported JSXElements, function calls, object properties, and value usages'
+  )
+  .action(({ packages, fileGlobs, analyzeImportUsages, packageJsonCWD }) => {
     const usages = getPackagesUsages({
       packages,
       fileGlobs,
+      analyzeImportUsages,
       packageJsonCWD,
     });
 

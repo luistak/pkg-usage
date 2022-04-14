@@ -2,6 +2,7 @@ import { join, dirname } from 'path';
 import { cwd } from 'process';
 import { writeFileSync, existsSync, mkdirSync, rmdirSync } from 'fs';
 import f from 'faker';
+import { ExportType, Import } from '../src';
 
 export const MOCKS_DIR = '__mocks__';
 export const MOCKS_DIR_CWD = join(join(cwd(), MOCKS_DIR));
@@ -30,15 +31,107 @@ function mockUniqueList<T, U>(
     .filter((value, index, self) => self.indexOf(value) === index);
 }
 
-export function mockPackageUsageFile(customData?: string) {
-  const imports = mockUniqueList(() => f.hacker.noun().replace(/ |-/g, ''));
+function word() {
+  return f.hacker.noun().replace(/ |-/g, '');
+}
+
+function capitalize(word: string) {
+  return `${word.charAt(0).toUpperCase()}${word.slice(1)}`;
+}
+
+function generatePropList(props: string[]) {
+  return props.map((prop) => `${prop}="${prop}"`).join(' ');
+}
+
+function jsxElement(value: string, line: number): [Import, string] {
+  const props = mockUniqueList(() => word().toLowerCase());
+  return [
+    {
+      name: value,
+      type: ExportType.named,
+      usages: [
+        {
+          line: line + 2,
+          props,
+          text: `<${value} ${generatePropList(props)}/>`,
+        },
+      ],
+    },
+    `function ${capitalize(word())}() { return (<${value} ${generatePropList(
+      props
+    )}/>)}`,
+  ];
+}
+
+function propertyAccess(value: string, line: number): [Import, string] {
+  const property = word();
+  return [
+    {
+      name: value,
+      type: ExportType.named,
+      usages: [{ line: line + 2, property, text: `\n${value}.${property}` }],
+    },
+    `${value}.${property}`,
+  ];
+}
+
+function callExpression(value: string, line: number): [Import, string] {
+  return [
+    {
+      name: value,
+      type: ExportType.named,
+      usages: [{ line: line + 2, text: `\n${value}()` }],
+    },
+    `${value}()`,
+  ];
+}
+
+function valueUsage(value: string, line: number): [Import, string] {
+  return [
+    {
+      name: value,
+      type: ExportType.named,
+      usages: [{ line: line + 2, text: `\n${value};` }],
+    },
+    `${value};`,
+  ];
+}
+
+const possibleUsages = [propertyAccess, callExpression, valueUsage, jsxElement];
+
+function mockTSFile(pkgName: string, imports: string[]) {
+  const importSection = `import { ${imports.join(', ')} } from '${pkgName}';`;
+
+  const usages = imports.map((entry, index) =>
+    possibleUsages[index % possibleUsages.length](entry, index)
+  );
+
+  const mockedImports = usages.map((data) => data[1]);
+
+  return {
+    file: [importSection, ...mockedImports].join('\n'),
+    imports: usages.map((data) => data[0]),
+  };
+}
+
+type mockPackageUsageFileAttributes = {
+  customData?: string;
+  analyzeImportUsages?: boolean;
+};
+
+export function mockPackageUsageFile({
+  customData,
+  analyzeImportUsages = false,
+}: mockPackageUsageFileAttributes) {
+  const importNames = mockUniqueList(() => capitalize(word()));
   const fileName = f.datatype.uuid();
   const pkg = f.hacker.noun();
   const version = f.system.semver();
 
+  const { file, imports } = mockTSFile(pkg, importNames);
   // Mocked with random data to generate a resilient test
-  const data = customData ?? `import { ${imports.join(', ')} } from '${pkg}';`;
-  writeFile(`${fileName}.ts`, data);
+  const data = customData ?? file;
+  writeFile(`${fileName}.tsx`, data);
 
   writeFile(
     'package.json',
@@ -54,8 +147,18 @@ export function mockPackageUsageFile(customData?: string) {
     })
   );
 
+  if (customData) {
+    return {
+      fileName,
+      pkg,
+      version,
+    };
+  }
+
   return {
-    imports,
+    imports: analyzeImportUsages
+      ? imports
+      : imports.map(({ name, type }) => ({ name, type })),
     fileName,
     pkg,
     version,
